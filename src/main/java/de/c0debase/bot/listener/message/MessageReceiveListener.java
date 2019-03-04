@@ -3,7 +3,6 @@ package de.c0debase.bot.listener.message;
 import com.vdurmont.emoji.EmojiManager;
 import de.c0debase.bot.core.Codebase;
 import de.c0debase.bot.database.data.CodebaseUser;
-import de.c0debase.bot.utils.Constants;
 import de.c0debase.bot.utils.StringUtils;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Member;
@@ -22,6 +21,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 public class MessageReceiveListener extends ListenerAdapter {
@@ -102,7 +102,7 @@ public class MessageReceiveListener extends ListenerAdapter {
                 final int newLevel = codebaseUser.getLevel();
                 levelUpEmbed.appendDescription(event.getAuthor().getAsMention() + " ist nun Level " + newLevel);
                 if(channel.getIdLong() != DISCUSSION_CHANNEL_ID){
-                    levelUpEmbed.setImage(gifs.get(Constants.RANDOM.nextInt(gifs.size())));
+                    levelUpEmbed.setImage(gifs.get(ThreadLocalRandom.current().nextInt(gifs.size())));
                 }
 
                 channel.sendMessage(levelUpEmbed.build()).queue();

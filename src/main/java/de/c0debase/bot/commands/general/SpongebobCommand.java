@@ -1,8 +1,9 @@
 package de.c0debase.bot.commands.general;
 
 import de.c0debase.bot.commands.Command;
-import de.c0debase.bot.utils.Constants;
 import net.dv8tion.jda.core.entities.Message;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 public class SpongebobCommand extends Command {
 
@@ -19,8 +20,9 @@ public class SpongebobCommand extends Command {
         } else {
             StringBuilder builder = new StringBuilder();
 
+            final ThreadLocalRandom random = ThreadLocalRandom.current();
             for(char c : String.join(" ", args).toCharArray()){
-                if(Constants.RANDOM.nextBoolean()){
+                if (random.nextBoolean()) {
                     builder.append(Character.toUpperCase(c));
                 } else {
                     builder.append(Character.toLowerCase(c));

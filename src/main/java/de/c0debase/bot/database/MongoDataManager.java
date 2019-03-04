@@ -1,11 +1,11 @@
 package de.c0debase.bot.database;
 
+import com.google.gson.Gson;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import de.c0debase.bot.core.Codebase;
 import de.c0debase.bot.database.data.CodebaseUser;
-import de.c0debase.bot.utils.Constants;
 import de.c0debase.bot.utils.Pagination;
 import net.jodah.expiringmap.ExpiringMap;
 import org.bson.Document;
@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
  * @date 27.04.18
  */
 public class MongoDataManager implements DataManager {
+    private static final Gson gson = new Gson();
 
     private final MongoDatabaseManager databaseManager;
     private final Map<String, CodebaseUser> userCache;
@@ -57,9 +58,9 @@ public class MongoDataManager implements DataManager {
             codebaseUser.setLastMessage(System.currentTimeMillis());
             codebaseUser.setUserID(userID);
             codebaseUser.setRoles(new ArrayList<>());
-            databaseManager.getUsers().insertOne(Document.parse(Constants.GSON.toJson(codebaseUser)));
+            databaseManager.getUsers().insertOne(Document.parse(gson.toJson(codebaseUser)));
         } else {
-            codebaseUser = Constants.GSON.fromJson(document.toJson(jsonWriterSettings), CodebaseUser.class);
+            codebaseUser = gson.fromJson(document.toJson(jsonWriterSettings), CodebaseUser.class);
             if (codebaseUser.getCoins() == null) {
                 codebaseUser.setCoins(codebaseUser.getXp() * 0.01);
             }
@@ -69,7 +70,8 @@ public class MongoDataManager implements DataManager {
     }
 
     public void updateUserData(final CodebaseUser codebaseUser) {
-        databaseManager.getUsers().replaceOne(Filters.and(Filters.eq("guildID", codebaseUser.getGuildID()), Filters.eq("userID", codebaseUser.getUserID())), Document.parse(Constants.GSON.toJson(codebaseUser)));
+        databaseManager.getUsers().replaceOne(Filters.and(Filters.eq("guildID", codebaseUser.getGuildID()),
+                Filters.eq("userID", codebaseUser.getUserID())), Document.parse(gson.toJson(codebaseUser)));
         userCache.put(codebaseUser.getGuildID() + "-" + codebaseUser.getUserID(), codebaseUser);
     }
 
@@ -84,7 +86,7 @@ public class MongoDataManager implements DataManager {
 
         for (Document aDocument : document) {
             if (bot.getJDA().getUserById(aDocument.getString("userID")) != null) {
-                codebaseUsers.add(Constants.GSON.fromJson(aDocument.toJson(jsonWriterSettings), CodebaseUser.class));
+                codebaseUsers.add(gson.fromJson(aDocument.toJson(jsonWriterSettings), CodebaseUser.class));
             }
         }
         codebaseUsers.sort((o1, o2) -> {

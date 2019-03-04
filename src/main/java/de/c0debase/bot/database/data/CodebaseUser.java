@@ -1,9 +1,9 @@
 package de.c0debase.bot.database.data;
 
-import de.c0debase.bot.utils.Constants;
 import lombok.Data;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Data
 public class CodebaseUser {
@@ -15,7 +15,7 @@ public class CodebaseUser {
     private List<String> roles;
 
     public boolean addXP(int xp) {
-        int morexp = Constants.RANDOM.nextInt(xp);
+        int morexp = ThreadLocalRandom.current().nextInt(xp);
         this.xp += morexp;
         coins += morexp * 0.03;
         double reach = 1000 * level * 1.2;
